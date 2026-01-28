@@ -156,8 +156,7 @@
             "urlgrabber/3.10.1 yum/3.4.3",
             "urlgrabber/3.9.1 yum/3.2.27",
             "urlgrabber/3.9.1 yum/3.2.29",
-            "urlgrabber/3.9.1 yum/3.4.3",
-            NaN
+            "urlgrabber/3.9.1 yum/3.4.3"
         ],
         "mapping": {
             "-": 0,
@@ -293,8 +292,7 @@
             "urlgrabber/3.10.1 yum/3.4.3": 130,
             "urlgrabber/3.9.1 yum/3.2.27": 131,
             "urlgrabber/3.9.1 yum/3.2.29": 132,
-            "urlgrabber/3.9.1 yum/3.4.3": 133,
-            "NaN": 134
+            "urlgrabber/3.9.1 yum/3.4.3": 133
         }
     }
 }
