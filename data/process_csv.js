@@ -1,32 +1,15 @@
-/**
- * process_csv.js - Feature extraction and encoding for ML
- * 
- * Processes parsed logs and creates feature vectors with encoded values.
- * Usage: node process_csv.js <input_json_file>
- */
-
 const fs = require('fs');
 const path = require('path');
 
-/**
- * Extract hour from NGINX timestamp
- * Format: "28/Jan/2026:15:30:45 +0530"
- */
 function extractHour(timestamp) {
     const match = timestamp.match(/:(\d{2}):\d{2}:\d{2}/);
     return match ? parseInt(match[1], 10) : 0;
 }
 
-/**
- * Extract path from URL (remove query params)
- */
 function extractPath(url) {
     return url.split('?')[0];
 }
 
-/**
- * Create label encoders for categorical features
- */
 function createEncoders(logs) {
     const methods = [...new Set(logs.map(l => l.method))].sort();
     const paths = [...new Set(logs.map(l => extractPath(l.url)))].sort();
@@ -48,16 +31,12 @@ function createEncoders(logs) {
     };
 }
 
-/**
- * Process logs into feature vectors
- */
 function processLogs(inputFile) {
-    console.log(`📊 Processing: ${inputFile}`);
+    console.log(`Processing: ${inputFile}`);
 
     const logs = JSON.parse(fs.readFileSync(inputFile, 'utf-8'));
     const encoders = createEncoders(logs);
 
-    // Create feature vectors
     const features = logs.map(log => {
         const logPath = extractPath(log.url);
         return {
@@ -70,28 +49,22 @@ function processLogs(inputFile) {
         };
     });
 
-    // Save encoder mappings
     const encoderPath = path.join(path.dirname(inputFile), 'encoder_mappings.json');
     fs.writeFileSync(encoderPath, JSON.stringify(encoders, null, 2));
-    console.log(`✅ Encoders saved to: ${encoderPath}`);
+    console.log(`Encoders saved to: ${encoderPath}`);
 
-    // Save features
     const featuresPath = path.join(path.dirname(inputFile), 'features.json');
     fs.writeFileSync(featuresPath, JSON.stringify(features, null, 2));
-    console.log(`✅ Features saved to: ${featuresPath}`);
+    console.log(`Features saved to: ${featuresPath}`);
 
-    // Calculate baseline statistics for anomaly detection
     const stats = calculateStats(features);
     const statsPath = path.join(path.dirname(inputFile), 'baseline_stats.json');
     fs.writeFileSync(statsPath, JSON.stringify(stats, null, 2));
-    console.log(`✅ Baseline stats saved to: ${statsPath}`);
+    console.log(`Baseline stats saved to: ${statsPath}`);
 
     return { features, encoders, stats };
 }
 
-/**
- * Calculate baseline statistics for Z-score anomaly detection
- */
 function calculateStats(features) {
     const numericFields = ['status', 'size', 'method', 'path', 'user_agent', 'hour_of_day'];
     const stats = {};
@@ -120,13 +93,11 @@ function calculateStats(features) {
     return stats;
 }
 
-// CLI usage
 if (require.main === module) {
     const args = process.argv.slice(2);
 
     if (args.length < 1) {
         console.log('Usage: node process_csv.js <input_json_file>');
-        console.log('Example: node process_csv.js parsed_logs.json');
         process.exit(1);
     }
 
